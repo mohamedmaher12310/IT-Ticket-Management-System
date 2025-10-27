@@ -54,8 +54,11 @@ This project consists of two interconnected n8n workflows that automate the enti
 - Conditional Processing - Smart ticket status detection.
 
 
-### 🏗️ System Architecture
-graph TB
+## 🏗️ System Architecture
+
+### Diagram
+```mermaid
+flowchart TD
     A[User Form Submission] --> B[Form Trigger]
     B --> C[MySQL Ticket Counter]
     C --> D[Generate Ticket ID]
@@ -64,11 +67,13 @@ graph TB
     
     G[Scheduled Email Check] --> H[Gmail Monitoring]
     H --> I[Filter Support Responses]
-    I --> J{Status Check}
+    I --> J[Status Check]
     J -->|Completed| K[Update Ticket Status]
     J -->|Pending| H
-    K --> F
-
+    
+    style A fill:#e1f5fe
+    style G fill:#f3e5f5
+    style K fill:#c8e6c9
 
 ### 📊 Workflow Details
 
