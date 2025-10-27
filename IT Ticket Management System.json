@@ -1,0 +1,437 @@
+{
+  "name": "IT Ticket Management System",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Norpetco IT Ticket Support System",
+        "formDescription": "Please fill the data and let us help you ;)",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Name",
+              "placeholder": "ex: Mohamed Maher",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Department",
+              "placeholder": "ex : IT Dept.",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Issue",
+              "placeholder": "Type the problem you faced",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Periority",
+              "placeholder": "ex: low , medium , high",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.3,
+      "position": [
+        -2720,
+        -1344
+      ],
+      "id": "02297415-3f37-4b0d-b9a0-05f0f05d2a8f",
+      "name": "On form submission",
+      "webhookId": "3f77ac00-3986-459d-8c79-77e8effa4e57"
+    },
+    {
+      "parameters": {
+        "operation": "formatDate",
+        "date": "={{ $('On form submission').item.json.submittedAt }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dateTime",
+      "typeVersion": 2,
+      "position": [
+        -1408,
+        -1280
+      ],
+      "id": "66d7a931-46f8-4429-b646-f8cfb910388e",
+      "name": "Date & Time"
+    },
+    {
+      "parameters": {
+        "sendTo": "mohamedmaherr12310@gmail.com",
+        "subject": "=Norpetco IT Ticket Support System",
+        "emailType": "text",
+        "message": "=Please here is your new ticket to solve :\nTicket ID : {{ $('Code in JavaScript2').item.json.formatted_ticket_id }}\nName: {{ $('On form submission').item.json.Name }}\nDepartment:{{ $('On form submission').item.json.Department }}\nIssue:{{ $('On form submission').item.json.Issue }}\nPriority:{{ $('On form submission').item.json.Periority }}\nDate Submitted:{{ $json.formattedDate }}\nStatus: Open",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -1600,
+        -1456
+      ],
+      "id": "11f0a6da-fc77-47a6-9b0e-e22f7f9ed702",
+      "name": "Send a message",
+      "webhookId": "0338af91-2893-48a7-96df-bcd125fce8b4",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "BEF3IzgRYMVM4RsK",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT current_number, ticket_prefix \nFROM ticket_counter \nWHERE id = 1",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.5,
+      "position": [
+        -2496,
+        -1344
+      ],
+      "id": "ddaf5f24-caed-4a70-a814-d051288d6390",
+      "name": "Execute a SQL query",
+      "credentials": {
+        "mySql": {
+          "id": "5T0b9qXfe3dVFy6y",
+          "name": "MySQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get current values from database\nconst currentNumber = $input.first().json.current_number;\nconst ticketPrefix = $input.first().json.ticket_prefix;\n\n// Increment ticket number\nconst newNumber = currentNumber + 1;\n\n// Format ticket number (e.g., TICKET-0001)\nconst formattedNumber = newNumber.toString().padStart(4, '0');\nconst ticketId = `${ticketPrefix}-${formattedNumber}`;\n\n// Return both for database update and output\nreturn [\n  {\n    json: {\n      new_ticket_number: newNumber,\n      formatted_ticket_id: ticketId,\n      ticket_prefix: ticketPrefix,\n      previous_number: currentNumber,\n      generated_at: new Date().toISOString()\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2272,
+        -1344
+      ],
+      "id": "f854af12-bc32-4b95-86c7-1ed25ab0deb0",
+      "name": "Code in JavaScript2"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE ticket_counter \nSET current_number = {{ $json.new_ticket_number }}\nWHERE id = 1",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.5,
+      "position": [
+        -2048,
+        -1344
+      ],
+      "id": "dec6345f-3b22-462c-ae0b-f1592abf74a3",
+      "name": "Execute a SQL query1",
+      "credentials": {
+        "mySql": {
+          "id": "5T0b9qXfe3dVFy6y",
+          "name": "MySQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Return a clean, formatted ticket response\nreturn {\n  json: {\n    success: true,\n    ticket_id: $input.first().json.formatted_ticket_id,\n    ticket_number: $input.first().json.new_ticket_number,\n    message: `Ticket ${$input.first().json.formatted_ticket_id} generated successfully`,\n    timestamp: new Date().toISOString()\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1824,
+        -1344
+      ],
+      "id": "fd3128fe-7ffc-469f-b608-0c9ad2a104a1",
+      "name": "Code in JavaScript3"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1lTviIorNFB1CGTZZEPByk24zxd89mpZanrloLi8dSGE",
+          "mode": "list",
+          "cachedResultName": "IT Ticket System Log",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lTviIorNFB1CGTZZEPByk24zxd89mpZanrloLi8dSGE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lTviIorNFB1CGTZZEPByk24zxd89mpZanrloLi8dSGE/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name": "={{ $('On form submission').item.json.Name }}",
+            "Issue": "={{ $('On form submission').item.json.Issue }}",
+            "Department": "={{ $('On form submission').item.json.Department }}",
+            "Date": "={{ $json.formattedDate }}",
+            "Periority": "={{ $('On form submission').item.json.Periority }}",
+            "Ticket ID": "={{ $('Code in JavaScript2').item.json.formatted_ticket_id }}",
+            "Status": "Open",
+            "Thread_ID": "={{ $('Send a message').item.json.threadId }}"
+          },
+          "matchingColumns": [
+            "Ticket ID"
+          ],
+          "schema": [
+            {
+              "id": "Ticket ID",
+              "displayName": "Ticket ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Department",
+              "displayName": "Department",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Issue",
+              "displayName": "Issue",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Periority",
+              "displayName": "Periority",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Done By",
+              "displayName": "Done By",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Solution Describtion",
+              "displayName": "Solution Describtion",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Thread_ID",
+              "displayName": "Thread_ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -1152,
+        -1344
+      ],
+      "id": "cb247f54-cf3f-4c7e-b6e4-b9e284bcf601",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "hLMC7cNkSVncIoMf",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "formatDate",
+        "date": "={{ $('On form submission').item.json.submittedAt }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dateTime",
+      "typeVersion": 2,
+      "position": [
+        -1680,
+        -1648
+      ],
+      "id": "cbc7e00e-dca4-4d56-b400-b9aaa9c056e0",
+      "name": "Date & Time1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Date & Time": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        [
+          {
+            "node": "Date & Time",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute a SQL query": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript2": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute a SQL query1": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript3": {
+      "main": [
+        [
+          {
+            "node": "Date & Time1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        []
+      ]
+    },
+    "Date & Time1": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Africa/Cairo",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false,
+    "saveDataErrorExecution": "all",
+    "errorWorkflow": "09SufwDXrgK34VrF",
+    "saveExecutionProgress": true
+  },
+  "versionId": "681402e0-f107-46a7-8c7e-b6ba4f0a89f1",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "314116074c75f1e4592f3eeff6cbdcb110a8577b91cd2da53178ad8e452081c3"
+  },
+  "id": "09SufwDXrgK34VrF",
+  "tags": []
+}
