@@ -150,3 +150,129 @@ CREATE TABLE ticket_counter (
 INSERT INTO ticket_counter (id, current_number, ticket_prefix) 
 VALUES (1, 0, 'TICKET');
 ```
+
+## Step 2: Google Sheets Setup
+Create a new Google Sheet with the following columns:
+
+| Column Name         | Type     | Description                          |
+|---------------------|----------|--------------------------------------|
+| Ticket ID           | String   | Auto-generated ticket identifier     |
+| Name                | String   | Requester's name                     |
+| Department          | String   | Department/team                      |
+| Issue               | String   | Problem description                  |
+| Priority            | String   | Low/Medium/High                      |
+| Date                | DateTime | Submission timestamp                 |
+| Status              | String   | Open/Closed                          |
+| Thread_ID           | String   | Gmail thread identifier              |
+| Done By             | String   | Support agent who resolved           |
+| Solution Description| String   | Resolution details                   |
+
+
+## Step 3: n8n Configuration
+
+### Import Workflows
+1. Navigate to n8n dashboard
+2. Click "Import from file"
+3. Select both JSON workflow files
+
+### Configure Credentials
+- Set up Gmail OAuth2 credentials
+- Configure MySQL database connection
+- Add Google Sheets OAuth2 integration
+
+## Step 4: Activate Workflows
+1. Toggle both workflows to "Active" state
+2. Test the form submission process
+3. Verify email notifications are working
+
+## ⚙️ Configuration
+### Environment Variables
+
+```bash
+
+# Database Configuration
+N8N_DB_HOST=your_mysql_host
+N8N_DB_USER=your_mysql_user
+N8N_DB_PASSWORD=your_mysql_password
+N8N_DB_NAME=your_database_name
+
+# Email Configuration
+N8N_EMAIL_FROM=support@yourcompany.com
+N8N_EMAIL_TO=it-team@yourcompany.com
+
+# Webhook Configuration
+N8N_PROTOCOL=https
+N8N_HOST=your-n8n-domain.com
+N8N_PORT=5678
+
+```
+
+## ⚙️ Configuration
+
+### Workflow Settings
+
+#### Main Workflow:
+- **Timezone**: Africa/Cairo
+- **Execution Order**: v1
+- **Error Handling**: All errors saved
+
+#### Tracker Workflow:
+- **Schedule**: Every 60 seconds
+- **Email Limit**: 10 messages per check
+- **Batch Size**: 1 item per operation
+
+## 📖 Usage
+
+### Accessing the Form
+The IT support form is accessible at: `http://your-n8n-domain:5678/form/3f77ac00-3986-459d-8c79-77e8effa4e57`
+
+## 🔄 Form Submission Process
+
+1. **User fills out the form** with their issue details
+2. **System generates unique Ticket ID** (e.g., TICKET-0001)
+3. **Email notification sent** to support team with all details
+4. **Ticket logged in Google Sheets** with "Open" status
+5. **Support team responds** via email to resolve the issue
+
+## ✅ Ticket Closure Process
+
+1. **System monitors emails** every minute for responses
+2. **Identifies completion emails** based on predefined criteria
+3. **Updates ticket status** to "Closed" in Google Sheets
+4. **Logs resolution details** and support agent information
+
+
+## 🤝 Contributing
+
+We welcome contributions to improve this IT Ticket Management System!
+
+### Development Setup
+1. **Fork the repository**
+2. **Create a feature branch**: `git checkout -b feature/improvement`
+3. **Test changes** in your n8n instance
+4. **Submit a pull request** with detailed description
+
+### Best Practices
+- Maintain backward compatibility when modifying workflows
+- Test all changes in a development environment
+- Update documentation for any new features
+- Follow n8n node naming conventions
+
+## 📄 License
+
+This project is licensed under the **MIT License** 
+
+## 🆘 Support
+
+For support and questions:
+- 📧 **Email**: [mohamedmaherr12310@gmail.com](mailto:mohamedmaherr12310@gmail.com)
+- 🐛 **Create an issue** in the GitHub repository
+- 📚 **Check n8n documentation**: [docs.n8n.io](https://docs.n8n.io)
+
+## 🔄 Version History
+
+### v1.0 (2024-01-15)
+- **Initial release**
+- Basic ticket creation and tracking
+- Email integration
+- Google Sheets logging
