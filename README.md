@@ -57,6 +57,8 @@ This project consists of two interconnected n8n workflows that automate the enti
 ## 🏗️ System Architecture
 
 ### Diagram
+
+
 ```mermaid
 flowchart TD
     A[User Form Submission] --> B[Form Trigger]
