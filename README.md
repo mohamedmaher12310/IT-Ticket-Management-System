@@ -19,19 +19,19 @@ This project consists of two interconnected n8n workflows that automate the enti
 
 ### ✨ Features
 
-##🎯 Core Functionality
+## 🎯 Core Functionality
 
--Automated Ticket Creation - From web form submissions.
+- Automated Ticket Creation - From web form submissions.
 
--Unique Ticket ID Generation - Sequential numbering with custom prefixes.
+- Unique Ticket ID Generation - Sequential numbering with custom prefixes.
 
--Real-time Email Notifications - Instant alerts to support team.
+- Real-time Email Notifications - Instant alerts to support team.
 
--Centralized Ticket Logging - Google Sheets integration for reporting.
+- Centralized Ticket Logging - Google Sheets integration for reporting.
 
--Automated Status Updates - Email-based ticket closure system.
+- Automated Status Updates - Email-based ticket closure system.
 
--Priority Management - Support for Low, Medium, High priority levels.
+- Priority Management - Support for Low, Medium, High priority levels.
 
 
 ## 🔧 Technical Features
@@ -41,17 +41,17 @@ This project consists of two interconnected n8n workflows that automate the enti
 - Categorical features are label-encoded using `LabelEncoder`.
 
 ### 3. 🛠️ Feature Engineering
--MySQL Integration - Reliable ticket counter management.
+- MySQL Integration - Reliable ticket counter management.
 
--Gmail Integration - Seamless email communication.
+- Gmail Integration - Seamless email communication.
 
--Google Sheets API - Comprehensive audit trails.
+- Google Sheets API - Comprehensive audit trails.
 
--Custom JavaScript Logic - Flexible business rules.
+- Custom JavaScript Logic - Flexible business rules.
 
--Scheduled Monitoring - Automated email checking.
+- Scheduled Monitoring - Automated email checking.
 
--Conditional Processing - Smart ticket status detection.
+- Conditional Processing - Smart ticket status detection.
 
 
 ### 🏗️ System Architecture
@@ -97,7 +97,7 @@ n8n-nodes-base.googleSheets - Data logging and audit trail
 
 n8n-nodes-base.code - Custom JavaScript for ticket ID generation
 
-2. Ticket Status Tracker (Ticket_Status_Tracker.json)
+# 2. Ticket Status Tracker (Ticket_Status_Tracker.json)
 Purpose: Monitors email responses and automatically updates ticket status.
 
 Scheduled Email Check → Filter Support Responses → Update Ticket Status → Close Tickets
@@ -135,5 +135,18 @@ n8n-nodes-base.splitInBatches - Batch processing for multiple emails
 ✅ Proper OAuth2 credentials configured in n8n.
 
 
-# Step 1: Database Setup
+## Step 1: Database Setup
+
 Create the required MySQL table:
+
+```sql
+CREATE TABLE ticket_counter (
+    id INT PRIMARY KEY,
+    current_number INT,
+    ticket_prefix VARCHAR(50)
+);
+
+-- Insert initial data
+INSERT INTO ticket_counter (id, current_number, ticket_prefix) 
+VALUES (1, 0, 'TICKET');
+```
