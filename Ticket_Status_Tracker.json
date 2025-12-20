@@ -29,16 +29,16 @@
             {
               "id": "6a06ef39-e35f-4a41-8543-cce114cf583e",
               "leftValue": "={{ $json.Subject }}",
-              "rightValue": "RE: Norpetco IT Ticket Support System",
+              "rightValue": "(Re: Norpetco IT Ticket Support System|RE: Norpetco IT Ticket Support System)",
               "operator": {
                 "type": "string",
-                "operation": "contains"
+                "operation": "regex"
               }
             },
             {
               "id": "36bf097f-024d-407e-b938-c3078a53eac6",
               "leftValue": "={{ $json.From }}",
-              "rightValue": "(Mohamed Maher Ahmed <mohamed-maher@norpetco.com>|Amal Fathy A El-Hamied Ali <Amal@norpetco.com>|Ibrahim Mahmoud A El-Rahman <ibrahim-mahmoud@norpetco.com>|Mohamed <mohamedmaherr12310@gmail.com>)",
+              "rightValue": "=(Mohamed Maher Ahmed <mohamed-maher@norpetco.com>|Amal Fathy A El-Hamied Ali <Amal@norpetco.com>|Ibrahim Mahmoud A El-Rahman <ibrahim-mahmoud@norpetco.com>|Mohamed <mohamedmaherr12310@gmail.com>)",
               "operator": {
                 "type": "string",
                 "operation": "regex"
@@ -365,7 +365,7 @@
     "callerPolicy": "workflowsFromSameOwner",
     "availableInMCP": false
   },
-  "versionId": "feec5192-f60f-4d8e-9724-1fe37fdf1d43",
+  "versionId": "c709179b-ff74-4a8b-99c6-2686f81c57f9",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "8a3b81d74d38f6b7ea8b89854d3e7b43e2749a678a498b9f75515adfe8555138"
