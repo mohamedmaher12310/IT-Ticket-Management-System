@@ -10,10 +10,10 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        32,
-        -240
+        -560,
+        -48
       ],
-      "id": "289d407c-d2d0-4063-a415-19de315d86ed",
+      "id": "2cb8464d-cf5e-4555-a8d6-75fc267f71c8",
       "name": "Loop Over Items"
     },
     {
@@ -29,7 +29,7 @@
             {
               "id": "6a06ef39-e35f-4a41-8543-cce114cf583e",
               "leftValue": "={{ $json.Subject }}",
-              "rightValue": "Re: Norpetco IT Ticket Support System",
+              "rightValue": "RE: Norpetco IT Ticket Support System",
               "operator": {
                 "type": "string",
                 "operation": "contains"
@@ -38,16 +38,16 @@
             {
               "id": "36bf097f-024d-407e-b938-c3078a53eac6",
               "leftValue": "={{ $json.From }}",
-              "rightValue": "Mohamed <mohamedmaherr12310@gmail.com>",
+              "rightValue": "(Mohamed Maher Ahmed <mohamed-maher@norpetco.com>|Amal Fathy A El-Hamied Ali <Amal@norpetco.com>|Ibrahim Mahmoud A El-Rahman <ibrahim-mahmoud@norpetco.com>|Mohamed <mohamedmaherr12310@gmail.com>)",
               "operator": {
                 "type": "string",
-                "operation": "contains"
+                "operation": "regex"
               }
             },
             {
               "id": "1ebe8479-0563-40fe-9580-1f7e1d27149c",
               "leftValue": "={{ $json.snippet }}",
-              "rightValue": "=(Done|accomplished|solved)",
+              "rightValue": "=(?:Done|accomplished|solved|تمت بنجاح|done|DONE|تم)\\s*[-=~_]*\\s*(?:Original Message|Forwarded message|From:|Sent:)",
               "operator": {
                 "type": "string",
                 "operation": "regex"
@@ -61,10 +61,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -240,
-        -176
+        -832,
+        16
       ],
-      "id": "884aab2e-742f-4a53-af08-2dcf040d770c",
+      "id": "e288255a-3bdb-40bf-8d90-28a0c01acf75",
       "name": "If2"
     },
     {
@@ -90,7 +90,7 @@
             "Done By": "={{ $('Get many messages2').item.json.From }}",
             "Status": "Closed",
             "Thread_ID": "={{ $json.threadId }}",
-            "Solution Describtion": "={{ $json.snippet }}"
+            "Solution Description and Thread History": "={{ $json.snippet }}"
           },
           "matchingColumns": [
             "Thread_ID"
@@ -177,8 +177,8 @@
               "removed": false
             },
             {
-              "id": "Solution Describtion",
-              "displayName": "Solution Describtion",
+              "id": "Solution Description and Thread History",
+              "displayName": "Solution Description and Thread History",
               "required": false,
               "defaultMatch": false,
               "display": true,
@@ -216,14 +216,17 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        320,
-        -208
+        -272,
+        -16
       ],
-      "id": "61c2639b-33f3-4215-b295-2eca62e5a4a8",
+      "id": "4947f270-a1d3-48af-b976-68aa42745671",
       "name": "Update row in sheet2",
+      "retryOnFail": true,
+      "maxTries": 4,
+      "waitBetweenTries": 4000,
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "hLMC7cNkSVncIoMf",
+          "id": "nOtCsDYyTk6MMFqh",
           "name": "Google Sheets account"
         }
       }
@@ -231,22 +234,25 @@
     {
       "parameters": {
         "operation": "getAll",
-        "limit": 10,
+        "limit": 20,
         "filters": {}
       },
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
       "position": [
-        -464,
-        -176
+        -1056,
+        16
       ],
-      "id": "ffed7ae4-526d-4372-ae32-a8899157954c",
+      "id": "c0953161-37c3-462e-9149-c659fe3857e8",
       "name": "Get many messages2",
       "webhookId": "ab6e12ad-1d8d-44c1-99f2-18458d9f736a",
+      "retryOnFail": true,
+      "waitBetweenTries": 4000,
+      "maxTries": 4,
       "credentials": {
         "gmailOAuth2": {
-          "id": "BEF3IzgRYMVM4RsK",
-          "name": "Gmail account"
+          "id": "0q3BhyxW5gP66ham",
+          "name": "Gmail account 2"
         }
       }
     },
@@ -263,11 +269,23 @@
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
       "position": [
-        -688,
-        -176
+        -1280,
+        16
       ],
-      "id": "54f1a991-20ea-4833-92bd-bb527310af1e",
+      "id": "17baac52-ffda-445c-85a2-7787067b9e61",
       "name": "Schedule Trigger1"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -416,
+        -144
+      ],
+      "id": "9b8dfcae-0be5-4cb1-afea-d67aca6c7ba6",
+      "name": "Wait",
+      "webhookId": "06abb4a7-1c6b-4add-ac98-2d3f98974815"
     }
   ],
   "pinData": {},
@@ -277,7 +295,7 @@
         [],
         [
           {
-            "node": "Update row in sheet2",
+            "node": "Wait",
             "type": "main",
             "index": 0
           }
@@ -327,6 +345,17 @@
           }
         ]
       ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Update row in sheet2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": true,
@@ -334,13 +363,13 @@
     "executionOrder": "v1",
     "timezone": "Africa/Cairo",
     "callerPolicy": "workflowsFromSameOwner",
-    "availableInMCP": false,
-    "errorWorkflow": "7h24fWCwMLu7zmfu"
+    "availableInMCP": false
   },
-  "versionId": "27845ab9-2d93-445b-a4cf-b646d0d574bf",
+  "versionId": "feec5192-f60f-4d8e-9724-1fe37fdf1d43",
   "meta": {
-    "instanceId": "314116074c75f1e4592f3eeff6cbdcb110a8577b91cd2da53178ad8e452081c3"
+    "templateCredsSetupCompleted": true,
+    "instanceId": "8a3b81d74d38f6b7ea8b89854d3e7b43e2749a678a498b9f75515adfe8555138"
   },
-  "id": "7h24fWCwMLu7zmfu",
+  "id": "07iZ53nRTUM4D8KL",
   "tags": []
 }

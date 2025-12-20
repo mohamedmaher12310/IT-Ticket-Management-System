@@ -8,23 +8,86 @@
         "formFields": {
           "values": [
             {
-              "fieldLabel": "Name",
+              "fieldLabel": "Name الاسم",
               "placeholder": "ex: Mohamed Maher",
               "requiredField": true
             },
             {
-              "fieldLabel": "Department",
+              "fieldLabel": "Department  القسم",
               "placeholder": "ex : IT Dept.",
               "requiredField": true
             },
             {
-              "fieldLabel": "Issue",
-              "placeholder": "Type the problem you faced",
+              "fieldLabel": "Issue  المشكلة",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Computer won't turn on/start up              الكمبيوتر لا يعمل/لا يبدأ التشغيل"
+                  },
+                  {
+                    "option": "Computer running extremely slow  الكمبيوتر يعمل ببطء شديد"
+                  },
+                  {
+                    "option": "Mouse/keyboard not working لا يعمل الماوس/لوحة المفاتيح"
+                  },
+                  {
+                    "option": "Printer not printing الطابعة لا تطبع"
+                  },
+                  {
+                    "option": "Software license/activation problems مشاكل ترخيص/تفعيل البرامج"
+                  },
+                  {
+                    "option": "No internet connection لا يوجد اتصال بالإنترنت"
+                  },
+                  {
+                    "option": "Email not sending/receiving لا يتم إرسال/استلام البريد الإلكتروني"
+                  },
+                  {
+                    "option": "Video conference/meeting issues مشاكل مؤتمرات/اجتماعات الفيديو"
+                  },
+                  {
+                    "option": "New user account setup إعداد حساب مستخدم جديد"
+                  },
+                  {
+                    "option": "Cannot make/receive calls لا يمكن إجراء/استقبال المكالمات"
+                  },
+                  {
+                    "option": "Lost/deleted files الملفات المفقودة/المحذوفة"
+                  },
+                  {
+                    "option": "Cable/connection issues مشاكل الكابلات/الوصلات"
+                  },
+                  {
+                    "option": "Toner/ink replacement needed يلزم استبدال الحبر/التونر"
+                  },
+                  {
+                    "option": "Other (please describe) آخر"
+                  }
+                ]
+              },
               "requiredField": true
             },
             {
-              "fieldLabel": "Periority",
-              "placeholder": "ex: low , medium , high",
+              "fieldLabel": "Description الوصف",
+              "placeholder": "If other please describe the problem. إذا كان هناك سبب آخر، فيرجى وصف المشكلة."
+            },
+            {
+              "fieldLabel": "Periority الأولوية",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Low منخفض"
+                  },
+                  {
+                    "option": "Medium متوسط"
+                  },
+                  {
+                    "option": "High عالي"
+                  }
+                ]
+              },
               "requiredField": true
             }
           ]
@@ -36,10 +99,10 @@
       "type": "n8n-nodes-base.formTrigger",
       "typeVersion": 2.3,
       "position": [
-        -2720,
-        -1344
+        -1600,
+        -48
       ],
-      "id": "02297415-3f37-4b0d-b9a0-05f0f05d2a8f",
+      "id": "b5f6f544-89db-4542-aa41-b8b8a54c08ca",
       "name": "On form submission",
       "webhookId": "3f77ac00-3986-459d-8c79-77e8effa4e57"
     },
@@ -52,18 +115,18 @@
       "type": "n8n-nodes-base.dateTime",
       "typeVersion": 2,
       "position": [
-        -1408,
-        -1280
+        -32,
+        -48
       ],
-      "id": "66d7a931-46f8-4429-b646-f8cfb910388e",
+      "id": "fe3012df-ac48-4aad-8dda-833972cde734",
       "name": "Date & Time"
     },
     {
       "parameters": {
-        "sendTo": "mohamedmaherr12310@gmail.com",
+        "sendTo": "mohamed-maher@norpetco.com,mohamedmaherr12310@gmail.com,Amal@norpetco.com,ibrahim-mahmoud@norpetco.com",
         "subject": "=Norpetco IT Ticket Support System",
         "emailType": "text",
-        "message": "=Please here is your new ticket to solve :\nTicket ID : {{ $('Code in JavaScript2').item.json.formatted_ticket_id }}\nName: {{ $('On form submission').item.json.Name }}\nDepartment:{{ $('On form submission').item.json.Department }}\nIssue:{{ $('On form submission').item.json.Issue }}\nPriority:{{ $('On form submission').item.json.Periority }}\nDate Submitted:{{ $json.formattedDate }}\nStatus: Open",
+        "message": "=Please here is your new ticket to solve :\nTicket ID : {{ $('Code in JavaScript2').item.json.formatted_ticket_id }}\nName: {{ $('On form submission').item.json['Name الاسم'] }}\nDepartment:{{ $('On form submission').item.json['Department  القسم'] }}\nIssue:{{ $('On form submission').item.json['Issue  المشكلة'] }}\nPriority:{{ $('On form submission').item.json['Periority الأولوية'] }}\nDate Submitted:{{ $json.formattedDate }}\nStatus: Open",
         "options": {
           "appendAttribution": false
         }
@@ -71,36 +134,39 @@
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
       "position": [
-        -1600,
-        -1456
+        -256,
+        -48
       ],
-      "id": "11f0a6da-fc77-47a6-9b0e-e22f7f9ed702",
+      "id": "e1192aef-55cb-4189-89f8-ec6ed051e48a",
       "name": "Send a message",
       "webhookId": "0338af91-2893-48a7-96df-bcd125fce8b4",
+      "retryOnFail": true,
+      "waitBetweenTries": 4000,
+      "maxTries": 4,
       "credentials": {
         "gmailOAuth2": {
-          "id": "BEF3IzgRYMVM4RsK",
-          "name": "Gmail account"
+          "id": "0q3BhyxW5gP66ham",
+          "name": "Gmail account 2"
         }
       }
     },
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "SELECT current_number, ticket_prefix \nFROM ticket_counter \nWHERE id = 1",
+        "query": "SELECT current_number, ticket_prefix \nFROM ticket_counter\nWHERE id = 1",
         "options": {}
       },
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.5,
       "position": [
-        -2496,
-        -1344
+        -1376,
+        -48
       ],
-      "id": "ddaf5f24-caed-4a70-a814-d051288d6390",
+      "id": "7af85c09-e7ea-402c-bfaf-ef45a939ff4d",
       "name": "Execute a SQL query",
       "credentials": {
         "mySql": {
-          "id": "5T0b9qXfe3dVFy6y",
+          "id": "gLmbGffweYLJijfa",
           "name": "MySQL account"
         }
       }
@@ -112,10 +178,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -2272,
-        -1344
+        -1152,
+        -48
       ],
-      "id": "f854af12-bc32-4b95-86c7-1ed25ab0deb0",
+      "id": "12532534-31b9-4d04-8e9f-11609cd31114",
       "name": "Code in JavaScript2"
     },
     {
@@ -127,14 +193,14 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.5,
       "position": [
-        -2048,
-        -1344
+        -928,
+        -48
       ],
-      "id": "dec6345f-3b22-462c-ae0b-f1592abf74a3",
+      "id": "a5f27708-df38-42ea-ae02-fa9105cca84f",
       "name": "Execute a SQL query1",
       "credentials": {
         "mySql": {
-          "id": "5T0b9qXfe3dVFy6y",
+          "id": "gLmbGffweYLJijfa",
           "name": "MySQL account"
         }
       }
@@ -146,10 +212,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -1824,
-        -1344
+        -704,
+        -48
       ],
-      "id": "fd3128fe-7ffc-469f-b608-0c9ad2a104a1",
+      "id": "a1cbf269-20a4-4004-a154-7e55e9b9bf8a",
       "name": "Code in JavaScript3"
     },
     {
@@ -172,11 +238,11 @@
         "columns": {
           "mappingMode": "defineBelow",
           "value": {
-            "Name": "={{ $('On form submission').item.json.Name }}",
-            "Issue": "={{ $('On form submission').item.json.Issue }}",
-            "Department": "={{ $('On form submission').item.json.Department }}",
+            "Name": "={{ $('On form submission').item.json['Name الاسم'] }}",
+            "Issue": "={{ $('On form submission').item.json['Issue  المشكلة'] }}",
+            "Department": "={{ $('On form submission').item.json['Department  القسم'] }}",
             "Date": "={{ $json.formattedDate }}",
-            "Periority": "={{ $('On form submission').item.json.Periority }}",
+            "Periority": "={{ $('On form submission').item.json['Periority الأولوية'] }}",
             "Ticket ID": "={{ $('Code in JavaScript2').item.json.formatted_ticket_id }}",
             "Status": "Open",
             "Thread_ID": "={{ $('Send a message').item.json.threadId }}"
@@ -265,8 +331,8 @@
               "removed": false
             },
             {
-              "id": "Solution Describtion",
-              "displayName": "Solution Describtion",
+              "id": "Solution Description and Thread History",
+              "displayName": "Solution Description and Thread History",
               "required": false,
               "defaultMatch": false,
               "display": true,
@@ -293,14 +359,17 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        -1152,
-        -1344
+        256,
+        -48
       ],
-      "id": "cb247f54-cf3f-4c7e-b6e4-b9e284bcf601",
+      "id": "17395928-6462-439b-92c5-65f3741cdc42",
       "name": "Append row in sheet",
+      "retryOnFail": true,
+      "maxTries": 4,
+      "waitBetweenTries": 4000,
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "hLMC7cNkSVncIoMf",
+          "id": "nOtCsDYyTk6MMFqh",
           "name": "Google Sheets account"
         }
       }
@@ -314,11 +383,35 @@
       "type": "n8n-nodes-base.dateTime",
       "typeVersion": 2,
       "position": [
-        -1680,
-        -1648
+        -480,
+        -48
       ],
-      "id": "cbc7e00e-dca4-4d56-b400-b9aaa9c056e0",
+      "id": "7b8c93fb-23c0-4c2c-b4e5-b27fa21959dc",
       "name": "Date & Time1"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        112,
+        -208
+      ],
+      "id": "ec126195-8183-4dd0-981c-f03d61c4462a",
+      "name": "Wait",
+      "webhookId": "d1ad81ba-9166-4728-9d32-8568317f46b7"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -528,
+        -208
+      ],
+      "id": "45ac74e5-9eb3-475f-8c3e-88661b2c01b0",
+      "name": "Wait1",
+      "webhookId": "d1ad81ba-9166-4728-9d32-8568317f46b7"
     }
   ],
   "pinData": {},
@@ -338,7 +431,7 @@
       "main": [
         [
           {
-            "node": "Append row in sheet",
+            "node": "Wait",
             "type": "main",
             "index": 0
           }
@@ -400,12 +493,29 @@
         ]
       ]
     },
-    "Append row in sheet": {
+    "Date & Time1": {
       "main": [
-        []
+        [
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     },
-    "Date & Time1": {
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait1": {
       "main": [
         [
           {
@@ -422,16 +532,13 @@
     "executionOrder": "v1",
     "timezone": "Africa/Cairo",
     "callerPolicy": "workflowsFromSameOwner",
-    "availableInMCP": false,
-    "saveDataErrorExecution": "all",
-    "errorWorkflow": "09SufwDXrgK34VrF",
-    "saveExecutionProgress": true
+    "availableInMCP": false
   },
-  "versionId": "681402e0-f107-46a7-8c7e-b6ba4f0a89f1",
+  "versionId": "f2e973e8-28f1-4946-a103-229dfbb5ae30",
   "meta": {
     "templateCredsSetupCompleted": true,
-    "instanceId": "314116074c75f1e4592f3eeff6cbdcb110a8577b91cd2da53178ad8e452081c3"
+    "instanceId": "8a3b81d74d38f6b7ea8b89854d3e7b43e2749a678a498b9f75515adfe8555138"
   },
-  "id": "09SufwDXrgK34VrF",
+  "id": "syeWCb2HVVcxGR08",
   "tags": []
 }
