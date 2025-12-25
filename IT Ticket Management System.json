@@ -134,8 +134,8 @@
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
       "position": [
-        -256,
-        -48
+        -960,
+        -288
       ],
       "id": "e1192aef-55cb-4189-89f8-ec6ed051e48a",
       "name": "Send a message",
@@ -245,7 +245,7 @@
             "Periority": "={{ $('On form submission').item.json['Periority الأولوية'] }}",
             "Ticket ID": "={{ $('Code in JavaScript2').item.json.formatted_ticket_id }}",
             "Status": "Open",
-            "Thread_ID": "={{ $('Send a message').item.json.threadId }}"
+            "Thread_ID": "={{ $('Send email').item.json.messageId }}"
           },
           "matchingColumns": [
             "Ticket ID"
@@ -412,6 +412,78 @@
       "id": "45ac74e5-9eb3-475f-8c3e-88661b2c01b0",
       "name": "Wait1",
       "webhookId": "d1ad81ba-9166-4728-9d32-8568317f46b7"
+    },
+    {
+      "parameters": {
+        "fromEmail": "itticket@norpetco.com",
+        "toEmail": "mohamed-maher@norpetco.com",
+        "subject": "Norpetco IT Ticket Support System",
+        "emailFormat": "text",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        -240,
+        -320
+      ],
+      "id": "7abcd286-2564-4174-a719-7478fecbee91",
+      "name": "Send email",
+      "webhookId": "9902b02c-6836-42bc-b2fc-74eca85e9dd7",
+      "credentials": {
+        "smtp": {
+          "id": "KSVfn8qnnuLNDx6H",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "fileName": "Ticket_data"
+        }
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        -864,
+        208
+      ],
+      "id": "6e77662f-6cff-4946-ad76-a7d1b2ac6526",
+      "name": "Convert to File"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1lTviIorNFB1CGTZZEPByk24zxd89mpZanrloLi8dSGE",
+          "mode": "list",
+          "cachedResultName": "IT Ticket System Log",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lTviIorNFB1CGTZZEPByk24zxd89mpZanrloLi8dSGE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lTviIorNFB1CGTZZEPByk24zxd89mpZanrloLi8dSGE/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -1200,
+        192
+      ],
+      "id": "6604704b-1878-47f5-881a-6ae41a97214d",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "nOtCsDYyTk6MMFqh",
+          "name": "Google Sheets account"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -440,13 +512,7 @@
     },
     "Send a message": {
       "main": [
-        [
-          {
-            "node": "Date & Time",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        []
       ]
     },
     "Execute a SQL query": {
@@ -519,7 +585,34 @@
       "main": [
         [
           {
-            "node": "Send a message",
+            "node": "Send email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send email": {
+      "main": [
+        [
+          {
+            "node": "Date & Time",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        []
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Convert to File",
             "type": "main",
             "index": 0
           }
@@ -534,7 +627,7 @@
     "callerPolicy": "workflowsFromSameOwner",
     "availableInMCP": false
   },
-  "versionId": "f2e973e8-28f1-4946-a103-229dfbb5ae30",
+  "versionId": "cb8a5f79-4b99-4317-992b-2dbd889df9fa",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "8a3b81d74d38f6b7ea8b89854d3e7b43e2749a678a498b9f75515adfe8555138"
